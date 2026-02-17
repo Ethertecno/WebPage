@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logotext">
+            <div class="logo">
+                <img src="/Logo/Ethertecno_Logo.png" alt="" srcset="">
+            </div>
+
+            <div class="headertext">
+                <h1>Ether Tecno</h1>
+            </div>
+        </div>
+
+        <div>
+            <h3>Bienvenido Admin </h3>
+        </div>
+
+        <div class="userconfig">
+            <span onclick="showresetpassword()">Reiniciar Contraseña</span>
+            <span class="fas fa-sign-out-alt" id="logoutBtn" title="Salir"></span>
+        </div>
+
+
+    </header>
+
+    <div class="contents">
+
+        <div class="CreateProducts" id="CreateProducts">
+            <form method="post" action="/editProduct" enctype="multipart/form-data" id="editproductform">
+
+                <h2>Editar Producto</h2>
+
+                <div>
+                    <label class="label-control">Seccion de Producto</label>
+                    <select name="productsection" class="form-control" id="section-select" required>
+                        <option value="">Cargando secciones...</option>
+                    </select>
+
+                    <label class="label-control">Sub Seccion de Producto</label>
+                    <select name="productsubsection" class="form-control" id="subsection-select" required>
+                        <option value="">Cargando sub secciones...</option>
+                    </select>
+
+                    <label class="label-control">Nombre de Producto</label>
+                    <input type="text" id="name" class="form-control" name="productname"
+                        placeholder="Nombre de Producto" maxlength="100" required>
+
+                    <label class="label-control">Marca</label>
+                    <input type="text" id="brand" class="form-control" name="productbrand"
+                        placeholder="Marca de Producto" maxlength="100" required>
+
+                    <label class="label-control">Descripcion de Producto</label>
+                    <textarea id="description" class="form-control" name="productdesc" maxlength="500" cols="100"
+                        rows="5" placeholder="Descripcion de producto"></textarea>
+
+                    <label class="label-control">Precio de Producto</label>
+                    <input type="number" id="price" class="form-control" name="productprice" min="0" max="10000000"
+                        placeholder="Precio" required>
+
+                    <label class="label-control">Imagen Principal de Producto</label>
+                    <input type="file" class="form-control" name="productimageprin" accept="image/*" required>
+
+                    <label class="label-control">Imagenes adicionales de Producto</label>
+                    <input type="file" class="form-control" name="productimages" accept="image/*" multiple>
+
+                    <label class="label-control">Descripcion grande de Producto</label>
+                    <textarea id="briefdescription" class="form-control" name="productbriefdesc" maxlength="1000"
+                        cols="100" rows="10" placeholder="Descripcion grande de producto"></textarea>
+
+                    <label class="label-control">Especificaciones de Producto</label>
+                    <textarea id="productspec" class="form-control" name="productspec" maxlength="10000" cols="500"
+                        rows="20" placeholder="Especificaciones de producto"></textarea>
+
+                </div>
+                <button type="submit">Guardar Cambios</button>
+            </form>
+        </div>
+
+    </div>
+    <script src="/javascript/Product.js"></script>
+</body>
+
+</html>

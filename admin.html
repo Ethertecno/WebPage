@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <header>
+
+        <div class="logotext">
+            <div class="logo">
+                <img src="/Logo/Ethertecno_Logo.png" alt="" srcset="">
+            </div>
+
+            <div class="headertext">
+                <h1>Ether Tecno</h1>
+            </div>
+        </div>
+
+        <div>
+            <h3>Bienvenido Admin </h3>
+        </div>
+
+        <div class="userconfig">
+            <span onclick="showresetpassword()">Reiniciar Contraseña</span>
+            <span class="fas fa-sign-out-alt" id="logoutBtn" title="Salir"></span>
+        </div>
+
+
+    </header>
+
+    <div class="contents">
+
+        <dialog class="reset-password" id="reset-password">
+            <button id="closepassword" type="button" style="float: right;">✖</button>
+            <form id="resetpasswordform" onsubmit="checkpasswordchange(event)">
+                <label class="label-control">Nueva Contraseña</label>
+                <input class="form-control" type="password" name="password" id="password" required
+                    style="padding: 8px 10px;">
+
+                <label class="label-control" for="">Repetir Contraseña</label>
+                <input class="form-control" type="password" name="repeatpassword" id="repeatpassword" required
+                    style="padding: 8px 10px;">
+                <div>
+                    <button type="submit">Guardar</button>
+                </div>
+                <p id="reset-msg" style="margin-top: 20px;"></p>
+            </form>
+        </dialog>
+
+        <div class="lastlogin">
+            <p>Último acceso: <span id="lastLogin"></span></p>
+        </div>
+
+        <h2 style="margin-top: 50px;">Que quieres hacer hoy?</h2>
+        <div class="adminbuttons">
+
+            <button onclick="showcreateproduct()">Crear Productos</button>
+            <button onclick="showlistproduct()">Lista de Productos creados</button>
+            <button onclick="showcreatesections()">Crear Secciones de Productos</button>
+            <button onclick="showlistsections()">Lista de Secciones creados</button>
+
+        </div>
+
+        <div class="CreateProducts" id="CreateProducts" style="display: none;">
+            <form method="post" action="/CreateProducts" enctype="multipart/form-data" id="createproductsform">
+
+                <h2>Crear Nuevos Productos</h2>
+                <div>
+                    <label class="label-control">Seccion de Producto</label>
+                    <select name="productsection" class="form-control" id="section-select" required>
+                        <option value="">Cargando secciones...</option>
+                    </select>
+
+                    <label class="label-control">Sub Seccion de Producto</label>
+                    <select name="productsubsection" class="form-control" id="subsection-select" required>
+                        <option value="">Cargando sub secciones...</option>
+                    </select>
+
+                    <label class="label-control">Nombre de Producto</label>
+                    <input type="text" id="name" class="form-control" name="productname"
+                        placeholder="Nombre de Producto" maxlength="100" required>
+
+                    <label class="label-control">Marca</label>
+                    <input type="text" id="brand" class="form-control" name="productbrand"
+                        placeholder="Marca de Producto" maxlength="100" required>
+
+                    <label class="label-control">Descripcion de Producto</label>
+                    <textarea id="description" class="form-control" name="productdesc" maxlength="500" cols="100"
+                        rows="5" placeholder="Descripcion de producto"></textarea>
+
+                    <label class="label-control">Precio de Producto</label>
+                    <input type="number" id="price" class="form-control" name="productprice" min="0" max="10000000"
+                        placeholder="Precio" required>
+
+                    <label class="label-control">Imagen Principal de Producto</label>
+                    <input type="file" class="form-control" name="productimageprin" accept="image/*" required>
+
+                    <label class="label-control">Imagenes adicionales de Producto</label>
+                    <input type="file" class="form-control" name="productimages" accept="image/*" multiple>
+
+                    <label class="label-control">Descripcion grande de Producto</label>
+                    <textarea id="briefdescription" class="form-control" name="productbriefdesc" maxlength="10000"
+                        cols="500" rows="20" placeholder="Descripcion grande de producto"></textarea>
+
+                    <label class="label-control">Especificaciones de Producto</label>
+                    <textarea id="productspec" class="form-control" name="productspec" maxlength="10000" cols="500"
+                        rows="20" placeholder="Especificaciones de producto"></textarea>
+
+                </div>
+                <button id="Submit" type="submit">Finalizar y Crear Producto</button>
+            </form>
+        </div>
+
+        <div class="ProductsList" id="ProductsList" style="display: none;">
+            <table id="ProductslistTable">
+                <thead>
+                    <tr>
+                        <th>Sección</th>
+                        <th>Sub Sección</th>
+                        <th>Nombre</th>
+                        <th>Marca</th>
+                        <th>Descripcion</th>
+                        <th>Precio</th>
+                        <th>Fecha y Hora Creado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="ProductosListBody">
+                    <!-- Rows will be added here -->
+                </tbody>
+            </table>
+            <div id="pagination" style="margin-top: 10px;"></div>
+        </div>
+
+        <div class="CreateSections" id="CreateSections" style="display: none;">
+            <form method="post" action="/Createsections" id="createsectionsform">
+                <h2>Crear / Agregar Nuevas Secciones de Productos</h2>
+
+                <!-- Section -->
+                <label class="label-control">Nombre de Sección:</label>
+                <input type="text" class="form-control" placeholder="Ingresa Sección" name="section" required>
+
+                <!-- Subsections -->
+                <label class="label-control">Nombre de Sub Sección:</label>
+
+                <div id="subsections-container">
+                    <input type="text" class="form-control" placeholder="Ingresa Sub Sección" name="subsection[]"
+                        required>
+                    <button id="DeleteSubSections" type="button" onclick="deletesubsections()">
+                        Eliminar Sub Sección
+                    </button>
+
+                </div>
+                <button id="AddSubSections" type="button" onclick="addsubsections()">
+                    Agregar Sub Sección
+                </button>
+
+                <button id="Submit" type="submit">
+                    Finalizar y Crear Sección
+                </button>
+            </form>
+        </div>
+
+        <div class="SectionsList" id="SectionsList" style="display: none;">
+            <table id="SectionslistTable">
+                <thead>
+                    <tr>
+                        <th>Sección</th>
+                        <th>Sub Sección</th>
+                        <th>Fecha y Hora Creado</th>
+                    </tr>
+                </thead>
+                <tbody id="SectionsListBody">
+                    <!-- Rows will be added here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="EditProducts" id="EditProducts" style="display: none;">
+            <form enctype="multipart/form-data" id="editproductsform">
+
+                <h2>Editar Producto</h2>
+
+                <input type="hidden" name="productId" id="edit-productId">
+
+                <label class="label-control">Seccion de Producto</label>
+                <select name="productsection" class="form-control" id="edit-section-select" required></select>
+
+                <label class="label-control">Sub Seccion de Producto</label>
+                <select name="productsubsection" class="form-control" id="edit-subsection-select" required></select>
+
+                <label class="label-control">Nombre de Producto</label>
+                <input type="text" id="edit-name" class="form-control" name="productname" maxlength="100" required>
+
+                <label class="label-control">Marca</label>
+                <input type="text" id="edit-brand" class="form-control" name="productbrand" maxlength="100" required>
+
+                <label class="label-control">Descripcion de Producto</label>
+                <textarea id="edit-description" class="form-control" name="productdesc" maxlength="500" cols="100"
+                    rows="5"></textarea>
+
+                <label class="label-control">Precio de Producto</label>
+                <input type="number" id="edit-price" class="form-control" name="productprice" min="0" max="10000000"
+                    required>
+
+                <label class="label-control">Imagen Principal de Producto</label>
+                <input type="file" class="form-control" name="productimageprin" accept="image/*">
+
+                <label class="label-control">Imagenes adicionales de Producto</label>
+                <input type="file" class="form-control" name="productimages" accept="image/*" multiple>
+
+                <label class="label-control">Descripcion grande de Producto</label>
+                <textarea id="edit-briefdescription" class="form-control" name="productbriefdesc" maxlength="10000"
+                    cols="500" rows="20"></textarea>
+
+                <label class="label-control">Especificaciones de Producto</label>
+                <textarea id="edit-productspec" class="form-control" name="productspec" maxlength="10000" cols="500"
+                    rows="20"></textarea>
+
+                <button id="editSubmit" type="submit">Actualizar Producto</button>
+            </form>
+        </div>
+
+    </div>
+
+    <script src="/javascript/login.js"></script>
+    <script src="/javascript/index.js"></script>
+</body>
+
+</html>

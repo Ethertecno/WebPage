@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/index.css">
+    <title>login</title>
+</head>
+
+<body>
+
+    <header>
+        <div class="logotext">
+            <div class="logo">
+                <img src="/Logo/Ethertecno_Logo.png" alt="" srcset="">
+            </div>
+
+            <div class="headertext">
+                <h1>Ether Tecno</h1>
+
+            </div>
+        </div>
+    </header>
+
+    <div class="contents">
+        <div class="login-container">
+
+            <form id="loginform" onsubmit="login(event)">
+                <label for="username" class="label-control">Usuario</label>
+                <input type="text" class="form-control" name="username" id="username" placeholder="Usuario" required>
+
+                <label for="password" class="label-control">Contraseña</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Contraseña"
+                    required>
+
+                <div>
+                    <button type="submit" style="margin-top: 15px;">Iniciar sesión</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/javascript/login.js"></script>
+
+</body>
+
+</html>
