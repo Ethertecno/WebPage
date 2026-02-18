@@ -155,9 +155,11 @@ header {
 }
 
 .container {
+    width: 90%;
     max-width: 1400px;
     margin: 40px auto;
-    padding: 0 20px;
+    padding: 0 15px;
+    box-sizing: border-box;
 }
 
 .features {
@@ -1150,6 +1152,7 @@ button:hover {
         font-size: 0.85rem;
     }
 
+
     .container-intro {
         padding: 10px;
     }
@@ -1336,3 +1339,5 @@ button:hover {
     }
 
 }
+
+
