@@ -36,7 +36,7 @@ app.use(session({
     cookie: { maxAge: 1000 * 60 * 60 } // 1 hour
 }));
 
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
 
