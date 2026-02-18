@@ -20,7 +20,7 @@ if (productSubsec) {
 if (searchbar) {
     const price = "";
     const brand = "";
-    console.log("displaying")
+
     displayproducts(productSubsec, price, brand);
 }
 
@@ -68,11 +68,11 @@ if (productId) {
             aditionalimages.forEach(Img => {
                 const Adimagediv = document.createElement("div")
                 Adimagediv.className = "aditionalImage"
-                Adimagediv.innerHTML = `<img src="/uploads/${Img}" alt="Product Image">`;
+                Adimagediv.innerHTML = `<img src="${Img}" alt="Product Image">`;
                 imagesadidiv.appendChild(Adimagediv)
             });
 
-            imagediv.innerHTML = `<img src="/uploads/${product.mainImage}" alt="Product Image">`;
+            imagediv.innerHTML = `<img src="${product.mainImage}" alt="Product Image">`;
 
             const descelement = document.createElement("h2");
             descelement.textContent = product.description;
@@ -289,8 +289,7 @@ async function displayproducts(subsection, price, brand) {
     if (brand && brand.length > 0) bodyData.brand = brand;
     if (price && price.length > 0) bodyData.price = price;
 
-    console.log("query is " + query)
-    console.log("bodyvalue is" + bodyData)
+
     try {
         if (query) {
 
@@ -342,7 +341,7 @@ async function displayproducts(subsection, price, brand) {
                 const productdiv = document.createElement("div");
                 productdiv.className = "productdiv"
                 const imageElement = document.createElement("div")
-                imageElement.innerHTML = `<img src="/uploads/${product.mainImage}" alt="Product Image">`;
+                imageElement.innerHTML = `<img src="${product.mainImage}" alt="Product Image">`;
                 imageElement.className = "product-image"
 
                 const brandElement = document.createElement("h3")

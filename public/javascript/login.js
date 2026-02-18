@@ -104,8 +104,6 @@ async function lastlogin() {
                     minute: '2-digit'
                 });
 
-                console.log(lastlogindata.message)
-                console.log(formatted)
                 document.getElementById("lastLogin").textContent = formatted;
             }
         }

@@ -26,6 +26,37 @@ function showlistsections() {
     document.getElementById("CreateSections").style.display = "none";
     document.getElementById("SectionsList").style.display = "block";
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const form = document.getElementById("createproductsform");
+
+    form.addEventListener("submit", async function (event) {
+
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch("/CreateProducts", {
+                method: "POST",
+                body: formData
+            });
+
+            const text = await response.text();
+            alert(text);
+            form.reset();
+            window.location.href = "/admin";
+
+        } catch (err) {
+            console.error("Error submitting product:", err);
+        }
+
+    });
+
+});
+
+
 function addsubsections() {
     const container = document.getElementById("subsections-container");
 
@@ -342,7 +373,7 @@ async function getproductslist(page = 1) {
                 <td>${product.price || ""}</td>
                 <td>${new Date(product.createdAt).toLocaleString("es-ES")}</td>
                 <td>
-                    <button onclick="editProduct('${product._id}')">✏️</button>
+                    <button onclick="openEditForm('${product._id}')">✏️</button>
                     <button onclick="deleteProduct('${product._id}')">🗑️</button>
                 </td>
             `;
@@ -389,9 +420,8 @@ async function deleteProduct(id) {
     }
 }
 
-
+// Open edit form and populate fields
 async function openEditForm(productId) {
-    // Show edit form and hide other sections
     document.getElementById("EditProducts").style.display = "block";
     document.getElementById("CreateProducts").style.display = "none";
     document.getElementById("ProductsList").style.display = "none";
@@ -402,7 +432,7 @@ async function openEditForm(productId) {
 
         const product = await res.json();
 
-        // Fill the form
+        // Fill text inputs
         document.getElementById("edit-productId").value = product._id;
         document.getElementById("edit-name").value = product.name;
         document.getElementById("edit-brand").value = product.brand;
@@ -411,9 +441,9 @@ async function openEditForm(productId) {
         document.getElementById("edit-briefdescription").value = product.briefDescription ?? "";
         document.getElementById("edit-productspec").value = specificationsToText(product.specifications) ?? "";
 
-
-        // Load sections/subsections dynamically if needed
+        // Load sections/subsections
         await loadSections("edit-section-select", "edit-subsection-select", product.section, product.subsection);
+
 
     } catch (err) {
         console.error(err);
@@ -421,36 +451,36 @@ async function openEditForm(productId) {
     }
 }
 
+// Delete main image
+function deleteMainImage() {
+    const container = document.getElementById("edit-existing-main-image");
+    container.innerHTML = "";
+    const form = document.getElementById("editproductsform");
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "existingMainImage";
+    input.value = ""; // empty means deleted
+    form.appendChild(input);
+}
+
+// Submit edit form
 document.getElementById("editproductsform").addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const productId = document.getElementById("edit-productId").value;
-
-    const bodyData = {
-        productname: document.getElementById("edit-name").value,
-        productbrand: document.getElementById("edit-brand").value,
-        productsection: document.getElementById("edit-section-select").value,
-        productsubsection: document.getElementById("edit-subsection-select").value,
-        productprice: document.getElementById("edit-price").value,
-        productdesc: document.getElementById("edit-description").value,
-        productbriefdesc: document.getElementById("edit-briefdescription").value,
-        productspec: document.getElementById("edit-productspec").value
-    };
+    const form = document.getElementById("editproductsform");
+    const formData = new FormData(form); // includes text + files + hidden inputs
 
     try {
         const response = await fetch(`/products/${productId}`, {
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(bodyData)
+            body: formData
         });
 
         const result = await response.json();
-
         if (result.success) {
             alert("Producto actualizado correctamente ✅");
-            getproductslist(1); // refresh table
+            getproductslist(1); // refresh list
             document.getElementById("EditProducts").style.display = "none";
         } else {
             alert(result.message || "Error al actualizar");
