@@ -3,6 +3,7 @@ const express = require("express")
 const app = express()
 const session = require('express-session');
 const port = process.env.PORT || 3000;
+const cloudinary = require('./public/javascript/cloudinary');
 
 
 const multer = require('multer');
@@ -246,9 +247,41 @@ app.get("/sections/:id", async (req, res) => {
 
 app.post('/CreateProducts', upload.fields([
     { name: 'productimageprin', maxCount: 1 },
-    { name: 'productimages', maxCount: 5 } // max 5 extra images
+    { name: 'productimages', maxCount: 5 }
 ]), async (req, res) => {
     try {
+
+        let mainImageUrl = '';
+        if (req.files['productimageprin']?.[0]) {
+            const file = req.files['productimageprin'][0];
+
+            const uploaded = await cloudinary.uploader.upload(file.path, {
+                folder: `products/main`,
+                transformation: [
+                    { width: 800, height: 800, crop: 'limit' },
+                    { fetch_format: 'auto', quality: 'auto' }
+                ]
+            });
+
+            mainImageUrl = uploaded.secure_url;
+        }
+
+        const additionalImagesUrls = [];
+        if (req.files['productimages']) {
+            for (const file of req.files['productimages']) {
+
+                const uploaded = await cloudinary.uploader.upload(file.path, {
+                    folder: `products/additional`,
+                    transformation: [
+                        { width: 800, height: 800, crop: 'limit' },
+                        { fetch_format: 'auto', quality: 'auto' }
+                    ]
+                });
+
+                additionalImagesUrls.push(uploaded.secure_url);
+            }
+        }
+
         const product = new Product({
             name: req.body.productname,
             brand: req.body.productbrand,
@@ -258,14 +291,16 @@ app.post('/CreateProducts', upload.fields([
             description: req.body.productdesc,
             briefDescription: req.body.productbriefdesc,
             specifications: parseSpecifications(req.body.productspec),
-            mainImage: req.files['productimageprin'][0].filename,
-            additionalImages: req.files['productimages'] ? req.files['productimages'].map(f => f.filename) : []
+            mainImage: mainImageUrl,
+            additionalImages: additionalImagesUrls
         });
 
         await product.save();
+
         res.send('Producto creado correctamente!');
+
     } catch (err) {
-        console.error(err);
+        console.error("Error in /CreateProducts:", err);
         res.status(500).send('Error al crear producto');
     }
 });
@@ -285,11 +320,17 @@ app.get("/getProductslist", async (req, res) => {
     }
 });
 
-// UPDATE product
-app.put('/products/:id', async (req, res) => {
+// Allow multiple files: main image + additional images
+const cpUpload = upload.fields([
+    { name: 'productimageprin', maxCount: 1 },
+    { name: 'productimages', maxCount: 10 }
+]);
+
+app.put('/products/:id', cpUpload, async (req, res) => {
     try {
         const { id } = req.params;
 
+        // Build the basic update object from form fields
         const updateData = {
             name: req.body.productname,
             brand: req.body.productbrand,
@@ -300,20 +341,51 @@ app.put('/products/:id', async (req, res) => {
             briefDescription: req.body.productbriefdesc
         };
 
-        // ✅ Only update specifications if it exists and is not empty
+        // Update specifications if provided
         if (req.body.productspec && req.body.productspec.trim() !== "") {
             updateData.specifications = parseSpecifications(req.body.productspec);
         }
 
-        const updated = await Product.findByIdAndUpdate(
-            id,
-            updateData,
-            { new: true, runValidators: true }
-        );
-
-        if (!updated) {
-            return res.status(404).json({ message: "Producto no encontrado" });
+        // 1️⃣ Handle main image (replace if new uploaded)
+        if (req.files?.productimageprin?.[0]) {
+            const mainUpload = await cloudinary.uploader.upload(req.files.productimageprin[0].path, {
+                folder: "products/main"
+            });
+            updateData.mainImage = mainUpload.secure_url;
+        } else if (req.body.existingMainImage === "deleted") {
+            // Optional: user deleted main image
+            updateData.mainImage = null;
         }
+
+        // 2️⃣ Handle additional images
+        let additionalImages = [];
+
+        // a) Keep any remaining existing images
+        if (req.body.existingAdditionalImages) {
+            if (Array.isArray(req.body.existingAdditionalImages)) {
+                additionalImages = req.body.existingAdditionalImages;
+            } else {
+                additionalImages = [req.body.existingAdditionalImages];
+            }
+        }
+
+        // b) Add newly uploaded files
+        if (req.files?.productimages?.length > 0) {
+            for (const file of req.files.productimages) {
+                const uploadRes = await cloudinary.uploader.upload(file.path, {
+                    folder: "products/additional"
+                });
+                additionalImages.push(uploadRes.secure_url);
+            }
+        }
+
+        // ✅ Always assign to updateData, even if empty
+        updateData.additionalImages = additionalImages;
+
+        // 3️⃣ Update product in DB
+        const updated = await Product.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+
+        if (!updated) return res.status(404).json({ message: "Producto no encontrado" });
 
         res.json({ success: true, product: updated });
 
@@ -364,7 +436,7 @@ app.get("/search-products", async (req, res) => {
 
 app.post("/getproduct", async (req, res) => {
     const { subsection, price, brand } = req.body;
-    
+
     try {
         let query = { subsection };
 
@@ -397,7 +469,7 @@ app.post("/getproduct", async (req, res) => {
 
 app.post("/getproductsearchbar", async (req, res) => {
     const searchvalue = req.body.searchQuery;
-    
+
     try {
 
         let getproductinfo;
