@@ -70,7 +70,7 @@
         </div>
 
         <div class="CreateProducts" id="CreateProducts" style="display: none;">
-            <form method="post" action="/CreateProducts" enctype="multipart/form-data" id="createproductsform">
+            <form method="post" enctype="multipart/form-data" id="createproductsform">
 
                 <h2>Crear Nuevos Productos</h2>
                 <div>
@@ -205,17 +205,19 @@
 
                 <label class="label-control">Descripcion de Producto</label>
                 <textarea id="edit-description" class="form-control" name="productdesc" maxlength="500" cols="100"
-                    rows="5"></textarea>
+                    rows="5" required></textarea>
 
                 <label class="label-control">Precio de Producto</label>
                 <input type="number" id="edit-price" class="form-control" name="productprice" min="0" max="10000000"
                     required>
 
                 <label class="label-control">Imagen Principal de Producto</label>
-                <input type="file" class="form-control" name="productimageprin" accept="image/*">
+                <input type="file" class="form-control" id="edit-productimageprin" name="productimageprin"
+                    accept="image/*" required>
 
                 <label class="label-control">Imagenes adicionales de Producto</label>
-                <input type="file" class="form-control" name="productimages" accept="image/*" multiple>
+                <input type="file" class="form-control" id="edit-productimages" name="productimages" accept="image/*"
+                    multiple required>
 
                 <label class="label-control">Descripcion grande de Producto</label>
                 <textarea id="edit-briefdescription" class="form-control" name="productbriefdesc" maxlength="10000"
