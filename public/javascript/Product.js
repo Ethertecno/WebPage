@@ -267,9 +267,9 @@ async function displaysections() {
         contactBtn.className = "mobile-contact";
         contactBtn.textContent = "Contáctanos"
         contactBtn.href = "https://wa.me/56963034920?text=Hola%20quiero%20más%20información";
-        contactBtn.target="_blank"; 
-        contactBtn.rel="noopener";
-    
+        contactBtn.target = "_blank";
+        contactBtn.rel = "noopener";
+
         contactDiv.appendChild(contactBtn);
         sectionsdiv.appendChild(contactDiv);
 
@@ -437,10 +437,12 @@ if (document.getElementById("brands")) {
 if (document.getElementById("prices")) {
     document.getElementById("prices").addEventListener("change", () => {
         // Get all checked price ranges
+
         const checkedPrices = Array.from(
             document.querySelectorAll("#prices input[type='checkbox']:checked")
-        ).map(cb => cb.nextElementSibling.textContent);
+        ).map(cb => cb.nextElementSibling.textContent.trim().replace(/\s+/g, " "));
 
+        console.log(checkedPrices)
         // Pass price ranges to displayproducts
         // Also get checked brands to keep both filters working together
         const checkedBrands = Array.from(
