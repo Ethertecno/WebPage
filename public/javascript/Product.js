@@ -98,7 +98,7 @@ if (productId) {
             const link = window.location.href;
             const message = `Hola, quiero información sobre el producto ${link}`;
 
-            buttondiv.href = `https://wa.me/1234567890?text=${encodeURIComponent(message)}`;
+            buttondiv.href = `https://wa.me/56963034920?text=${encodeURIComponent(message)}`;
             buttondiv.target = "_blank";
             buttondiv.rel = "noopener";
 
@@ -263,12 +263,13 @@ async function displaysections() {
         const contactDiv = document.createElement("div");
         contactDiv.className = "mobile-contact";
 
-        const contactBtn = document.createElement("button");
-        contactBtn.textContent = "Contacto";
-        contactBtn.onclick = function () {
-            window.location.href = "/contact";
-        };
-
+        const contactBtn = document.createElement("a");
+        contactBtn.className = "mobile-contact";
+        contactBtn.textContent = "Contáctanos"
+        contactBtn.href = "https://wa.me/56963034920?text=Hola%20quiero%20más%20información";
+        contactBtn.target="_blank"; 
+        contactBtn.rel="noopener";
+    
         contactDiv.appendChild(contactBtn);
         sectionsdiv.appendChild(contactDiv);
 
