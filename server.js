@@ -11,7 +11,7 @@ const multer = require('multer');
 // Storage configuration
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads'); // files go here
+        cb(null, 'uploads/'); // files go here
     },
     filename: function (req, file, cb) {
         // Add timestamp to avoid conflicts
